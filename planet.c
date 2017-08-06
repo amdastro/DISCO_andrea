@@ -144,7 +144,7 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
 
    // update conservative variables
    cons[RHO=] -= drho_dt_sink*dVdt;
-   // Yike also updated the following, since these all contain a factor of rho
+   // Maybe also updated the following, since these all contain a factor of rho
    //cons[DDD] -= drho_dt_sink *dt/rho * cons[DDD];
    //cons[TAU] -= drho_dt_sink *dt/rho * cons[TAU];
    //cons[SRR] -= drho_dt_sink *dt/rho * cons[SRR];
