@@ -61,9 +61,9 @@ This should remove any dependency on HDF5.
 
 Changes by andrea:
 
-Updating Planet/drift.c to set the planet position at the GW inspiral rate (incomplete)
+Updated Planet/drift.c to set the planet position at the GW inspiral rate
 
-Adding a sink term for the planets (incomplete)
+Added another source term in planet.c that creates a sink around each planet, called in misc.c
 
 
 
