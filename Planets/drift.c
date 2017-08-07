@@ -22,7 +22,10 @@ int planet_motion_analytic( void ){
 }
 
 double drift_pos( double R , double t ){
-   return( pow( 1. + R*( t - t_max )/dexp , dexp ) );
+   //return( pow( 1. + R*( t - t_max )/dexp , dexp ) );
+   // currently adding 3 as initial position,
+   // but need to make this an input parameter like t_max
+   return (3.0*( pow( 1. + R*t , dexp ) ));
 }
 
 void initializePlanets( struct planet * thePlanets ){
