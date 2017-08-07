@@ -117,19 +117,29 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    t_sink_factor  = theDomain->theParList.t_sink_factor;
    r_sink  = theDomain->theParList.r_sink;
 
-   // Get planet data
-   double r_p = pl->r;
-   double p_p = pl->phi;
-
    // This is cell data? What is rp and rm?
    // Not sure if we need all these
    double rp = xp[0];
    double rm = xm[0];
    double rho = prim[RHO];
 
-   // some measure of the radius of the cell?
-   // Is this distance of cell to planet?
+   // This is some measure of the radius of the cell,
+   // maybe an average of face values to get the middle of the cell?
    double r = 0.5*(rp+rm);
+   // Phi of cell
+   double dphi = get_dp(xp[1],xm[1]);
+   double phi = xm[1] + 0.5*dphi;
+   double z = 0.0;
+   // Get the distance of the cell to the planet:
+   // From planet data:
+   double r_p = pl->r;
+   double p_p = pl->phi;
+   double cosp = cos(phi);
+   double sinp = sin(phi);
+   double dx = r*cosp-r_p*cos(p_p);
+   double dy = r*sinp-r_p*sin(p_p);
+   double script_r = sqrt(dx*dx+dy*dy+z*z);
+
 
    // t_sink = some factor times the viscous time
    double t_visc = 2./3. * r*r/nu;
@@ -138,12 +148,12 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    double drho_dt_sink = 0.0;
 
    // If r < r_sink, then drho_dt source term is calculated
-   if (r < r_sink){ 
+   if (script_r < r_sink){ 
       drho_dt_sink = rho / t_sink;
    }
 
    // update conservative variables
-   cons[RHO=] -= drho_dt_sink*dVdt;
+   cons[RHO] -= drho_dt_sink*dVdt;
    // Maybe also updated the following, since these all contain a factor of rho
    //cons[DDD] -= drho_dt_sink *dt/rho * cons[DDD];
    //cons[TAU] -= drho_dt_sink *dt/rho * cons[TAU];

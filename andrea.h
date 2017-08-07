@@ -39,7 +39,8 @@ struct param_list{
    int Mesh_Motion, Riemann_Solver;
    int Absorb_BC, Initial_Regrid, visc_flag, include_atmos;
    //amd
-   int sink_flag, t_sink_factor, r_sink;
+   int sink_flag;
+   double t_sink_factor, r_sink;
 
    double CFL, PLM;
    double Density_Floor, Pressure_Floor;
