@@ -5,6 +5,7 @@ static double rate = 0.0;
 static double dexp = 0.0;
 static double q = 0.0;
 static double t_max = 0.0;
+static double r_max = 0.0;
 
 void setPlanetParams( struct domain * theDomain ){
 
@@ -23,9 +24,9 @@ int planet_motion_analytic( void ){
 }
 
 double drift_pos( double R , double t ){
-   //return( pow( 1. + R*( t - t_max )/dexp , dexp ) );
+   return( pow( 1. + R*( t - t_max )/dexp , dexp ) );
    // amd: setting planet initial position at rmax
-   return (r_max*( pow( 1. + R*t , dexp ) ));
+   //return (r_max*( pow( 1. + R*t , dexp ) ));
 }
 
 void initializePlanets( struct planet * thePlanets ){

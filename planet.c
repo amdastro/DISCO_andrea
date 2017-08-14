@@ -117,8 +117,7 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    t_sink_factor  = theDomain->theParList.t_sink_factor;
    r_sink  = theDomain->theParList.r_sink;
 
-   // This is cell data? What is rp and rm?
-   // Not sure if we need all these
+   // This is cell data. What is rp and rm?
    double rp = xp[0];
    double rm = xm[0];
    double rho = prim[RHO];
@@ -153,9 +152,8 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    }
 
    // update conservative variables
-   cons[RHO] -= drho_dt_sink*dVdt;
+   cons[DDD] -= drho_dt_sink*dVdt;
    // Maybe also updated the following, since these all contain a factor of rho
-   //cons[DDD] -= drho_dt_sink *dt/rho * cons[DDD];
    //cons[TAU] -= drho_dt_sink *dt/rho * cons[TAU];
    //cons[SRR] -= drho_dt_sink *dt/rho * cons[SRR];
    //cons[LLL] -= drho_dt_sink *dt/rho * cons[LLL];
