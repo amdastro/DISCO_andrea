@@ -29,8 +29,8 @@ double get_om1( double r ){
 
 double get_cs2( double r ){
 //   double nu = .5;
-//   return( .5/Mach/Mach/pow(r,2.*nu) );
-   return( 1./Mach/Mach );
+   return( 1./Mach/Mach/r );
+//   return( 1./Mach/Mach );
 //   return(1.0);
 }
 
