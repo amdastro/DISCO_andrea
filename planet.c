@@ -127,6 +127,7 @@ void get_drho_dt(struct planet * pl , double r , double phi , double rho , doubl
    // This is dependent on the planet orbital time, which will change when it migrates
    // -- think about implications 
    double t_sink = t_sink_factor / om_p;
+   *drho_dt_sink = 0.0;
 
    // If r < r_sink, then drho_dt source term is calculated
    if (script_r < r_sink){ 
