@@ -130,9 +130,9 @@ void get_drho_dt(struct planet * pl , double r , double phi , double rho , doubl
    *drho_dt_sink = 0.0;
 
    // If r < r_sink, then drho_dt source term is calculated
-   if (script_r < r_sink){ 
-      *drho_dt_sink = rho / t_sink;
-   }
+   
+   *drho_dt_sink = rho / t_sink * exp(- pow( script_r / r_sink , 4.));
+   
 
 }
 
@@ -171,10 +171,10 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    // Update all the conservative variables since they have factors of rho
    // better to use primitive variables on the right hand side, since those 
    // aren't being updated throughout a time step
-   //cons[SRR] -= drho_dt_sink * vr * dVdt;
-   //cons[TAU] -= .5 * drho_dt_sink * dVdt;
-   //cons[LLL] -= r * drho_dt_sink * vp * dVdt;
-   //cons[SZZ] -= drho_dt_sink * vz * dVdt;
+   cons[SRR] -= drho_dt_sink * vr * dVdt;
+   cons[TAU] -= .5 * drho_dt_sink * dVdt;
+   cons[LLL] -= r * drho_dt_sink * vp * dVdt;
+   cons[SZZ] -= drho_dt_sink * vz * dVdt;
 
    // Here's the definitions of the cons variables
    //cons[TAU] = (.5*rho*v2 + rhoe )*dV;
