@@ -170,10 +170,10 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    // Update all the conservative variables since they have factors of rho
    // better to use primitive variables on the right hand side, since those 
    // aren't being updated throughout a time step
-   cons[SRR] -= drho_dt_sink * vr * dVdt;
-   cons[TAU] -= .5 * drho_dt_sink * dVdt;
-   cons[LLL] -= r * drho_dt_sink * vp * dVdt;
-   cons[SZZ] -= drho_dt_sink * vz * dVdt;
+   //cons[SRR] -= drho_dt_sink * vr * dVdt;
+   //cons[TAU] -= .5 * drho_dt_sink * dVdt;
+   //cons[LLL] -= r * drho_dt_sink * vp * dVdt;
+   //cons[SZZ] -= drho_dt_sink * vz * dVdt;
 
    // Here's the definitions of the cons variables
    //cons[TAU] = (.5*rho*v2 + rhoe )*dV;
