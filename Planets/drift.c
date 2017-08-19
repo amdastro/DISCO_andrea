@@ -6,6 +6,7 @@ static double dexp = 0.0;
 static double q = 0.0;
 static double t_max = 0.0;
 static double r_max = 0.0;
+static double mach = 0.0;
 
 void setPlanetParams( struct domain * theDomain ){
 
@@ -16,6 +17,7 @@ void setPlanetParams( struct domain * theDomain ){
    q     = theDomain->theParList.Mass_Ratio;
    t_max = theDomain->theParList.t_max;
    r_max = theDomain->theParList.rmax;
+   mach = theDomain->theParList.Disk_Mach;
 
 }
 
@@ -24,9 +26,9 @@ int planet_motion_analytic( void ){
 }
 
 double drift_pos( double R , double t ){
-   return( pow( 1. + R*( t - t_max )/dexp , dexp ) );
+   //return( pow( 1. + R*( t - t_max )/dexp , dexp ) );
    // amd: setting planet initial position at rmax
-   //return (r_max*( pow( 1. + R*t , dexp ) ));
+   return (r_max*( pow( 1. + R*t , dexp ) ));
 }
 
 void initializePlanets( struct planet * thePlanets ){
@@ -45,7 +47,8 @@ void initializePlanets( struct planet * thePlanets ){
    thePlanets[1].omega = pow(r,-1.5); 
    thePlanets[1].r     = r; 
    thePlanets[1].phi   = 0.0; 
-   thePlanets[1].eps   = 0.025;
+   //amd: smoothing length is one half of scale height
+   thePlanets[1].eps   = 0.5/mach;
 
 }
 
@@ -56,6 +59,7 @@ void movePlanets( struct planet * thePlanets , double t , double dt ){
    thePlanets[1].r     = r;
    thePlanets[1].omega = pow(r,-1.5);
    thePlanets[1].phi  += thePlanets[1].omega*dt;
+   // amd: here we should update eps to depend on local scale height
 
 }
 
