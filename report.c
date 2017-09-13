@@ -2,7 +2,6 @@
 #include "andrea.h"
 
 void planetaryForce( struct planet * , double , double , double , double * , double * , double * , int );
-// amd:
 void get_drho_dt(struct planet * , double , double , double , double , double , double , double * );
 
 
@@ -28,16 +27,16 @@ void report( struct domain * theDomain ){
    int Npl = theDomain->Npl;
 
    double r_p = 0.0;
-   double p_p = 0.0;  //amd
+   double p_p = 0.0; 
    if( Npl > 1 ){
      r_p = thePlanets[1].r;
-     p_p = thePlanets[1].phi;   //amd
+     p_p = thePlanets[1].phi;   
    }
 
    double * r_jph = theDomain->r_jph;
    double * z_kph = theDomain->z_kph;
 
-   // amd:
+
    double nu   = theDomain->theParList.viscosity;
    double t_sink_factor  = theDomain->theParList.t_sink_factor;
    double r_sink  = theDomain->theParList.r_sink;
@@ -70,10 +69,10 @@ void report( struct domain * theDomain ){
    double rhoavg_min = HUGE_VAL;
    double Mass = 0.0;
    double Mdot = 0.0;
-   //amd:
+
    // define mdot and accretion torque on secondary
    double MdotP = 0.0;
-   //double TorqAccP = 0.0;
+   double JdotP = 0.0;
 
    double BrBp = 0.0;
    double PdV  = 0.0;
@@ -81,7 +80,6 @@ void report( struct domain * theDomain ){
    double S_R = 0.0;
    double S_0 = 0.0;
 
-   // amd
    double drho_dt_sink = 0.0;
 
    //double T_cut[10];
@@ -100,6 +98,8 @@ void report( struct domain * theDomain ){
             double phi = c->piph - .5*c->dphi;
             double Pp  = c->prim[PPP];
             double rho = c->prim[RHO];
+            //amd:
+            double omega = c->prim[UPP];
 
             double phip = c->piph;
             double phim = phip-c->dphi;
@@ -134,6 +134,7 @@ void report( struct domain * theDomain ){
             S_R += pow(rho,4.)*r*dV;
             S_0 += pow(rho,4.)*dV;
 
+            // Calculate quantities on the secondary
             if( Npl > 1 ){
                double fr,fp,fz,fp2;
                double rp = thePlanets[1].r;
@@ -148,8 +149,17 @@ void report( struct domain * theDomain ){
                if( sink_flag ){ 
                   get_drho_dt( thePlanets+1  , r , phi , rho , nu , t_sink_factor , r_sink , &drho_dt_sink );
                }
-               // dm = drho_dt * dVdt
+               // Accretion rate
                MdotP += drho_dt_sink*dV;
+
+               // Accretion torque
+               double vp = r*omega;
+               double dphi2 = phi - thePlanets[1].phi;
+               double vp2 = vp * cos(dphi2) + vr*sin(dphi2);
+               double dj = rp * (vp2 - rp*om);
+
+               JdotP += drho_dt_sink * dj * dV;
+               //
 
                //double pp = thePlanets[1].phi;
                //double cosp = cos(phi);
@@ -194,6 +204,7 @@ void report( struct domain * theDomain ){
    MPI_Allreduce( MPI_IN_PLACE , &Torque  , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    MPI_Allreduce( MPI_IN_PLACE , &Torque2 , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    MPI_Allreduce( MPI_IN_PLACE , &MdotP   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
+   MPI_Allreduce( MPI_IN_PLACE , &JdotP   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    MPI_Allreduce( MPI_IN_PLACE , &Power   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    MPI_Allreduce( MPI_IN_PLACE , &Fr      , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    MPI_Allreduce( MPI_IN_PLACE , &PsiR    , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
@@ -220,8 +231,8 @@ void report( struct domain * theDomain ){
 
    if( rank==0 ){
       FILE * rFile = fopen("report.dat","a");
-      fprintf(rFile,"%e %e %e %e %e %e %e %e %e %e %e %e %e %e %e %e %e\n",
-                t,Torque,Torque2,r_p,p_p,MdotP,Fr,rho_min,rhoavg_min,PsiR,PsiI,Mass,Mdot,S_R,
+      fprintf(rFile,"%e %e %e %e %e %e %e %e %e %e %e %e %e %e %e %e\n",
+                t,Torque,Torque2,r_p,p_p,MdotP,JdotP,Fr,rho_min,rhoavg_min,Mass,Mdot,S_R,
                 L1_rho,L1_isen,L1_B);
       //fprintf(rFile,"%e %e %e ",t,Torque,Power);
       //for( j=0 ; j<10 ; ++j ) fprintf(rFile,"%e %e ",T_cut[j],P_cut[j]);
