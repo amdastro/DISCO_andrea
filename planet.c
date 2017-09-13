@@ -121,18 +121,18 @@ void get_drho_dt(struct planet * pl , double r , double phi , double rho , doubl
    double dy = r*sin(phi)-r_p*sin(p_p);
    double script_r = sqrt(dx*dx+dy*dy);
 
-   // t_sink = some factor times the viscous time
-   //double t_visc = 2./3. * script_r*script_r/nu;
-   // For now, take it to be some fraction of an orbit
-   // This is dependent on the planet orbital time, which will change when it migrates
-   // -- think about implications 
-   double t_sink = t_sink_factor / om_p;
+   // Set the accretion timescale to the local viscous timescale.
+   double t_visc = 2./3. * script_r*script_r/nu;
+   double t_sink = t_sink_factor * t_visc;
+   // Or we can make the timescale some number of orbital times.
+   // This is dependent on the planet's orbital frequency, which will change when it migrates -- think about implications of that! 
+   //double t_sink = t_sink_factor / om_p;
+
    *drho_dt_sink = 0.0;
 
    // If r < r_sink, then drho_dt source term is calculated
    
-   *drho_dt_sink = rho / t_sink * exp(- pow( script_r / r_sink , 4.));
-   
+   *drho_dt_sink = rho / t_sink * exp(- pow( script_r / r_sink , 4.)); 
 
 }
 
