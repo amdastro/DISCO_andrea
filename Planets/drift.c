@@ -15,7 +15,6 @@ void setPlanetParams( struct domain * theDomain ){
    dexp  = theDomain->theParList.Drift_Exp;
    q     = theDomain->theParList.Mass_Ratio;
    t_max = theDomain->theParList.t_max;
-   r_max = theDomain->theParList.rmax;
    mach = theDomain->theParList.Disk_Mach;
 
 }
