@@ -1,10 +1,9 @@
 #include "andrea.h"
 
 //amd
-static double nu = 0.0;
-static double t_sink_factor = 0.0;
-static double r_sink = 0.0;
-static int visc_flag = 0.0;
+//static double t_sink_factor = 0.0;
+//static double r_sink = 0.0;
+//static int visc_flag = 0.0;
 
 
 double PHI_ORDER = 2.0;
@@ -126,12 +125,11 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    // This is set up only for the secondary planet to accrete
    // So mtotal = q + 1
 
+   double nu = theDomain->theParList.viscosity;
+
    if (visc_flag){
       double alpha = theDomain->theParList.viscosity;
-      nu = pow( 1.0/(alpha*pres/rho)*sqrt(pow(script_r,-3)*m_p/(m_p+1.0) ),-1);
-   }
-   else {
-      nu = theDomain->theParList.viscosity;
+      double nu = pow( 1.0/(alpha*pres/rho)*sqrt(pow(script_r,-3)*m_p/(m_p+1.0) ),-1);
    }
  
    // Set the accretion timescale to the local viscous timescale.
@@ -176,9 +174,9 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
 
    double drho_dt_sink;
 
-   visc_flag = theDomain->theParList.alpha_flag;
-   t_sink_factor  = theDomain->theParList.t_sink_factor;
-   r_sink  = theDomain->theParList.r_sink;
+   double visc_flag = theDomain->theParList.alpha_flag;
+   double t_sink_factor  = theDomain->theParList.t_sink_factor;
+   double r_sink  = theDomain->theParList.r_sink;
 
 
    // Call get_drho_dt with planet data and cell r, phi
