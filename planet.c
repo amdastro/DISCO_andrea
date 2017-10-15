@@ -149,9 +149,13 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    *drho_dt_sink = 0.0;
 
    // If r < r_sink, then drho_dt source term is calculated
+   if (script_r < r_sink){
+      *drho_dt_sink = rho / t_sink;
+      printf("nu = %e, script_r = %e, drho_dt_sink = %e \n",nu, script_r, drho_dt_sink);
+   }
    
-   *drho_dt_sink = rho / t_sink * exp(- pow( script_r / r_sink , 4.)); 
-   //printf("nu = %e, visc_flag = %e \n",nu,visc_flag);
+   //*drho_dt_sink = rho / t_sink * exp(- pow( script_r / r_sink , 4.)); 
+   //printf("script_r,t_sink = %e \n",drho_dt_sink);
 
 }
 
