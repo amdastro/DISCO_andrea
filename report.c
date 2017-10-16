@@ -2,7 +2,7 @@
 #include "andrea.h"
 
 void planetaryForce( struct planet * , double , double , double , double * , double * , double * , int );
-void get_drho_dt(struct planet * , struct domain * , double , double , double , double , double , double , double , double * );
+void get_drho_dt(struct planet * , struct domain * , double , double , double , double , double * );
 
 
 
@@ -36,11 +36,7 @@ void report( struct domain * theDomain ){
    double * r_jph = theDomain->r_jph;
    double * z_kph = theDomain->z_kph;
 
-
-   double t_sink_factor  = theDomain->theParList.t_sink_factor;
-   double r_sink  = theDomain->theParList.r_sink;
    int sink_flag = theDomain->theParList.sink_flag;
-   int visc_flag = theDomain->theParList.alpha_flag;
 
    int jmin = Ng;
    int jmax = Nr-Ng;
@@ -150,7 +146,7 @@ void report( struct domain * theDomain ){
                // If there were multiple BHs, this would need to
                // loop over each planet
                if( sink_flag ){ 
-                  get_drho_dt( thePlanets+1  , theDomain , r , phi , pres , rho , visc_flag , t_sink_factor , r_sink , &drho_dt_sink );
+                  get_drho_dt( thePlanets+1  , theDomain , r , phi , pres , rho , &drho_dt_sink );
                }
                // Accretion rate
                MdotP += drho_dt_sink*dV;

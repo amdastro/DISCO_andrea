@@ -1,14 +1,11 @@
 #include "andrea.h"
 
-//amd
-//static double t_sink_factor = 0.0;
-//static double r_sink = 0.0;
-//static int visc_flag = 0.0;
-
 
 double PHI_ORDER = 2.0;
 
+// amd ?
 double get_dp( double , double );
+double getmindt( struct domain * ); 
 
 double phigrav( double M , double r , double eps ){
    double n = PHI_ORDER;
@@ -109,8 +106,7 @@ void planet_src( struct planet * pl , double * prim , double * cons , double * x
 }
 
 //amd
-
-void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , double phi , double rho , double pres , double visc_flag , double t_sink_factor , double r_sink , double * drho_dt_sink){
+void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , double phi , double rho , double pres , double * drho_dt_sink){
    // From planet data:
    double r_p = pl->r;
    double p_p = pl->phi;
@@ -125,6 +121,12 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    // This is set up only for the secondary planet to accrete
    // So mtotal = q + 1
 
+   double visc_flag = theDomain->theParList.alpha_flag;
+   double t_sink_factor  = theDomain->theParList.t_sink_factor;
+   double r_sink  = theDomain->theParList.r_sink;
+
+   //double dt = getmindt( theDomain );
+
    double nu = theDomain->theParList.viscosity;
 
    if (visc_flag){
@@ -132,30 +134,28 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
       double nu = pow( 1.0/(alpha*pres/rho)*sqrt(pow(script_r,-3)*m_p/(m_p+1.0) ),-1);
    }
  
-   // Set the accretion timescale to the local viscous timescale.
+   // Set the accretion timescale to the local viscous timescale
    double t_visc = 2./3. * script_r*script_r/nu;
    double t_sink = t_sink_factor * t_visc;
 
    // don't let sink timescale get too short, things could get unstable
-   // need to read in dt for this
-   // if (t_sink < 10.* dt){
+   //if (t_sink < 10.* dt){
    //    t_sink = 10.*dt;
-   // }
+   //}
 
    // Or we can make the timescale some number of orbital times.
-   // This is dependent on the planet's orbital frequency, which will change when it migrates -- think about implications of that! 
+   // This is dependent on the planet's orbital frequency, which 
+   // will change when it migrates -- think about implications of that! 
    //double t_sink = t_sink_factor / om_p;
 
-   *drho_dt_sink = 0.0;
+   //*drho_dt_sink = 0.0;
 
    // If r < r_sink, then drho_dt source term is calculated
-   if (script_r < r_sink){
-      *drho_dt_sink = rho / t_sink;
-      //printf("nu = %e, script_r = %e, drho_dt_sink = %e \n",nu, script_r, drho_dt_sink);
-   }
+   //if (script_r < r_sink){
+   //   *drho_dt_sink = rho / t_sink;
+   //}
    
-   //*drho_dt_sink = rho / t_sink * exp(- pow( script_r / r_sink , 4.)); 
-   //printf("script_r,t_sink = %e \n",drho_dt_sink);
+   *drho_dt_sink = rho / t_sink * exp(- pow( script_r / r_sink , 4.)); 
 
 }
 
@@ -178,31 +178,18 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
 
    double drho_dt_sink;
 
-   double visc_flag = theDomain->theParList.alpha_flag;
-   double t_sink_factor  = theDomain->theParList.t_sink_factor;
-   double r_sink  = theDomain->theParList.r_sink;
-
-
    // Call get_drho_dt with planet data and cell r, phi
-   // rho, pres, viscosity, and sink parameters
+   // rho, pres, viscosity
 
-   get_drho_dt( pl , theDomain , r , phi , rho , pres , visc_flag , t_sink_factor , r_sink , &drho_dt_sink );
+   get_drho_dt( pl , theDomain , r , phi , rho , pres , &drho_dt_sink );
 
-   // update conservative variables
-   cons[DDD] -= drho_dt_sink*dVdt;
    // Update all the conservative variables since they have factors of rho
    // better to use primitive variables on the right hand side, since those 
-   // aren't being updated throughout a time step
+   // aren't being updated throughout a time step   cons[DDD] -= drho_dt_sink*dVdt;
    cons[SRR] -= drho_dt_sink * vr * dVdt;
    cons[TAU] -= .5 * drho_dt_sink * dVdt;
    cons[LLL] -= r * drho_dt_sink * vp * dVdt;
    cons[SZZ] -= drho_dt_sink * vz * dVdt;
-
-   // Here are the definitions of the conservative variables
-   //cons[TAU] = (.5*rho*v2 + rhoe )*dV;
-   //cons[SRR] = rho*vr*dV;
-   //cons[LLL] = r*rho*vp*dV;
-   //cons[SZZ] = rho*vz*dV;
 
 }
 
