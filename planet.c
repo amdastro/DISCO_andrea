@@ -3,9 +3,8 @@
 
 double PHI_ORDER = 2.0;
 
-// amd ?
+// amd
 double get_dp( double , double );
-double getmindt( struct domain * ); 
 
 double phigrav( double M , double r , double eps ){
    double n = PHI_ORDER;
@@ -125,7 +124,7 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    double t_sink_factor  = theDomain->theParList.t_sink_factor;
    double r_sink  = theDomain->theParList.r_sink;
 
-   //double dt = getmindt( theDomain );
+   //can read in dt from planet_sink
 
    double nu = theDomain->theParList.viscosity;
 
