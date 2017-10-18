@@ -2,7 +2,7 @@
 #include "andrea.h"
 
 void planetaryForce( struct planet * , double , double , double , double * , double * , double * , int );
-void get_drho_dt(struct planet * , struct domain * , double , double , double , double , double , double * );
+void get_drho_dt(struct planet * , struct domain * , double , double , double , double , double * );
 
 
 
@@ -37,6 +37,7 @@ void report( struct domain * theDomain ){
    double * z_kph = theDomain->z_kph;
 
    int sink_flag = theDomain->theParList.sink_flag;
+
 
    int jmin = Ng;
    int jmax = Nr-Ng;
