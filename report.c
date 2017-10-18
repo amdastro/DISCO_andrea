@@ -2,7 +2,7 @@
 #include "andrea.h"
 
 void planetaryForce( struct planet * , double , double , double , double * , double * , double * , int );
-void get_drho_dt(struct planet * , struct domain * , double , double , double , double , double * );
+void get_drho_dt(struct planet * , struct domain * , double , double , double , double , double , double * );
 
 
 

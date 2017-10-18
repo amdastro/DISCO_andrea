@@ -437,14 +437,6 @@ void add_source( struct domain * theDomain , double dt ){
                   planet_sink(thePlanets+p , theDomain, c->prim , c->cons , xp , xm , dV*dt );
               }
             }
-            // amd: Another loop over secondary planets for sinks.
-            // This calculated drho_dt_sink and 
-            // updates the conservative variables. 
-            //if (sink_flag){
-            //  for( p=1 ; p<Npl ; ++p ){
-            //      planet_sink(thePlanets+p , theDomain, c->prim , c->cons , xp , xm , dV*dt );
-            //  }
-      
             omega_src( c->prim , c->cons , xp , xm , dV*dt );
          }    
       }    
