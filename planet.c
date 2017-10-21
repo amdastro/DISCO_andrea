@@ -123,7 +123,6 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    double visc_flag = theDomain->theParList.alpha_flag;
    double t_sink_factor  = theDomain->theParList.t_sink_factor;
    double r_sink  = theDomain->theParList.r_sink;
-
    
 
    double nu = theDomain->theParList.viscosity;
@@ -134,7 +133,9 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    }
  
    // Set the accretion timescale to the local viscous timescale
-   double t_visc = 2./3. * script_r*script_r/nu;
+   //double t_visc = 2./3. * script_r*script_r/nu;
+   // Set accretion timescale to viscous time at rsink
+   double t_visc = 2./3. * r_sink * r_sink / nu;
    double t_sink = t_sink_factor * t_visc;
 
    //can read in dt from planet_sink, but then need to read it in to report.c too
