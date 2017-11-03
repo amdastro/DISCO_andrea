@@ -129,11 +129,9 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
 
    if (visc_flag){
       double alpha = theDomain->theParList.viscosity;
-      double nu = pow( 1.0/(alpha*pres/rho)*sqrt(pow(script_r,-3)*m_p/(m_p+1.0) ),-1);
+      double nu = pow( 1.0/(alpha*pres/rho)*sqrt(pow(r_sink,-3)*m_p/(m_p+1.0) ),-1);
    }
  
-   // Set the accretion timescale to the local viscous timescale
-   //double t_visc = 2./3. * script_r*script_r/nu;
    // Set accretion timescale to viscous time at rsink
    double t_visc = 2./3. * r_sink * r_sink / nu;
    double t_sink = t_sink_factor * t_visc;
