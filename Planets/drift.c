@@ -1,4 +1,3 @@
-
 #include "../andrea.h"
 
 static double rate = 0.0;

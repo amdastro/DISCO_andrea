@@ -54,8 +54,9 @@ void planetaryForce( struct planet * pl , double r , double phi , double z , dou
 
    double f1 = -fgrav( pl->M , script_r , pl->eps );
 
-   double cosa = dx/script_r;
-   double sina = dy/script_r;
+   // geoff found a bug!
+   double cosa = dx/script_r_perp;
+   double sina = dy/script_r_perp;
 
    double cosap = cosa*cosp+sina*sinp;
    double sinap = sina*cosp-cosa*sinp;
@@ -109,29 +110,31 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    // From planet data:
    double r_p = pl->r;
    double p_p = pl->phi;
-   //double om_p = pl->omega;
-   double m_p = pl->M;
+   double om_p = pl->omega;
 
    // Get the distance of the cell to the planet:
    double dx = r*cos(phi)-r_p*cos(p_p);
    double dy = r*sin(phi)-r_p*sin(p_p);
    double script_r = sqrt(dx*dx+dy*dy);
 
-   // This is set up only for the secondary planet to accrete
-   // So mtotal = q + 1
-
    double visc_flag = theDomain->theParList.alpha_flag;
    double t_sink_factor  = theDomain->theParList.t_sink_factor;
-   double r_sink  = theDomain->theParList.r_sink;
-   
-
+   double mach  = theDomain->theParList.Disk_Mach;
+   // sink radius reads in current smoothing legnth
+   double r_sink_factor = theDomain->theParList.r_sink;
+   double eps = pl->eps;  
+   double r_sink = r_sink_factor*eps;
    double nu = theDomain->theParList.viscosity;
 
    if (visc_flag){
       double alpha = theDomain->theParList.viscosity;
-      double nu = pow( 1.0/(alpha*pres/rho)*sqrt(pow(r_sink,-3)*m_p/(m_p+1.0) ),-1);
+      //double c = sqrt( gamma_law*pres/rho );
+      //double h = c / om_p;
+      double h = r_p / mach;
+      double nu = alpha * pow(h,2) * om_p;
    }
  
+   //printf("nu = %e,r_sink = %e, r_sink_fac = %e, eps = %e, \n",nu,r_sink,r_sink_factor,eps);
    // Set accretion timescale to viscous time at rsink
    double t_visc = 2./3. * r_sink * r_sink / nu;
    double t_sink = t_sink_factor * t_visc;
