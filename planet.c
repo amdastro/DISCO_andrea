@@ -130,7 +130,7 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
       double alpha = theDomain->theParList.viscosity;
       //double c = sqrt( gamma_law*pres/rho );
       //double h = c / om_p;
-      double h = r_p / mach;
+      double h = r_sink / mach;  // SET TO DEPEND ON SINK RADIUS
       double nu = alpha * pow(h,2) * om_p;
    }
  
