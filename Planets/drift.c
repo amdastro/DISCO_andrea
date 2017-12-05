@@ -5,6 +5,7 @@ static double dexp = 0.0;
 static double q = 0.0;
 static double t_max = 0.0;
 static double mach = 0.0;
+static double eps_frac = 0.0;
 
 void setPlanetParams( struct domain * theDomain ){
 
@@ -14,7 +15,8 @@ void setPlanetParams( struct domain * theDomain ){
    dexp  = theDomain->theParList.Drift_Exp;
    q     = theDomain->theParList.Mass_Ratio;
    t_max = theDomain->theParList.t_max;
-   mach = theDomain->theParList.Disk_Mach;
+   mach  = theDomain->theParList.Disk_Mach;
+   eps_frac = theDomain->theParList.eps_frac;
 
 }
 
@@ -42,8 +44,8 @@ void initializePlanets( struct planet * thePlanets ){
    thePlanets[1].omega = pow(r,-1.5); 
    thePlanets[1].r     = r; 
    thePlanets[1].phi   = 0.0; 
-   //amd: smoothing length is one half of scale height
-   thePlanets[1].eps   = 0.5/mach;
+   //amd: smoothing length is some fraction of scale height
+   thePlanets[1].eps   = eps_frac/mach;
 
 }
 

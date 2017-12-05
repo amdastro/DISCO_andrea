@@ -95,6 +95,7 @@ int read_par_file( struct domain * theDomain ){
          err += readvar( pfile , "Use_Sink"              , VAR_INT  , &(theList->sink_flag)       ); //amd
          err += readvar( pfile , "Sink_Timescale"        , VAR_DOUB , &(theList->t_sink_factor)   ); //amd
          err += readvar( pfile , "Sink_Radius"           , VAR_DOUB , &(theList->r_sink)          ); //amd
+         err += readvar( pfile , "Eps_Frac"              , VAR_DOUB , &(theList->eps_frac)        ); //amd
          err += readvar( pfile , "Viscosity"             , VAR_DOUB , &(theList->viscosity)       );
          err += readvar( pfile , "Use_As_Alpha"          , VAR_INT  , &(theList->alpha_flag)      );
          err += readvar( pfile , "Include_Atmos"         , VAR_INT  , &(theList->include_atmos)   );
