@@ -110,7 +110,8 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    // From planet data:
    double r_p = pl->r;
    double p_p = pl->phi;
-   double om_p = pl->omega;
+   //double om_p = pl->omega;
+   double m_p = pl->M;
 
    // Get the distance of the cell to the planet:
    double dx = r*cos(phi)-r_p*cos(p_p);
@@ -129,9 +130,9 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    if (visc_flag){
       double alpha = theDomain->theParList.viscosity;
       //double c = sqrt( gamma_law*pres/rho );
-      //double h = c / om_p;
-      double h = r_sink / mach;  // SET TO DEPEND ON SINK RADIUS
-      double nu = alpha * pow(h,2) * om_p;
+      //double h = c / om_p; // THIS ASSUMES ISOTHERMAL
+      //double h = r_sink / mach;  // depend on sink radius
+      double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
    }
  
    //printf("nu = %e,r_sink = %e, r_sink_fac = %e, eps = %e, \n",nu,r_sink,r_sink_factor,eps);
