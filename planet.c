@@ -132,7 +132,8 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
       //double c = sqrt( gamma_law*pres/rho );
       //double h = c / om_p; // THIS ASSUMES ISOTHERMAL
       //double h = r_sink / mach;  // depend on sink radius
-      double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
+      //double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
+      double nu = 2.5e-5;
    }
  
    //printf("nu = %e,r_sink = %e, r_sink_fac = %e, eps = %e, \n",nu,r_sink,r_sink_factor,eps);
@@ -188,11 +189,14 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
 
    // Update all the conservative variables since they have factors of rho
    // better to use primitive variables on the right hand side, since those 
-   // aren't being updated throughout a time step   cons[DDD] -= drho_dt_sink*dVdt;
+   // aren't being updated throughout a time step   
+   
+   cons[DDD] -= drho_dt_sink*dVdt;
    cons[SRR] -= drho_dt_sink * vr * dVdt;
    cons[TAU] -= .5 * drho_dt_sink * dVdt;
    cons[LLL] -= r * drho_dt_sink * vp * dVdt;
    cons[SZZ] -= drho_dt_sink * vz * dVdt;
+
 
 }
 
