@@ -61,7 +61,7 @@ void movePlanets( struct planet * thePlanets , double t , double dt ){
    thePlanets[1].r     = r;
    thePlanets[1].omega = pow(r,-1.5);
    thePlanets[1].phi  += thePlanets[1].omega*dt;
-   thePlanets[1].eps   = 0.5 * r/mach;
+   thePlanets[1].eps   = eps_frac * r/mach;
 
 }
 

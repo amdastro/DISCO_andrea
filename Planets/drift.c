@@ -56,7 +56,7 @@ void movePlanets( struct planet * thePlanets , double t , double dt ){
    thePlanets[1].r     = r;
    thePlanets[1].omega = pow(r,-1.5);
    thePlanets[1].phi  += thePlanets[1].omega*dt;
-   // amd: here we should update eps to depend on local scale height
+   thePlanets[1].eps   = eps_frac * r/mach;
 
 }
 
