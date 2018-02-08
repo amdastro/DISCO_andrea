@@ -41,7 +41,7 @@ struct param_list{
    //amd
    int sink_flag;
    double t_sink_factor, r_sink;
-   double eps_frac;
+   double eps_frac, r_init;
 
    double CFL, PLM;
    double Density_Floor, Pressure_Floor;

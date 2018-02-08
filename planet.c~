@@ -132,8 +132,8 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
       //double c = sqrt( gamma_law*pres/rho );
       //double h = c / om_p; // THIS ASSUMES ISOTHERMAL
       //double h = r_sink / mach;  // depend on sink radius
-      double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
-      //double nu = 2.5e-5;
+      //double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
+      double nu = 2.5e-5;
    }
  
    //printf("nu = %e,r_sink = %e, r_sink_fac = %e, eps = %e, \n",nu,r_sink,r_sink_factor,eps);

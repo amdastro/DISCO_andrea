@@ -3,6 +3,6 @@
 # This file contains machine-specific variables for building Disco.
 
 # Location of HDF5 Library
-H55 = /Users/Shark/Documents/hdf5-1.10.1/hdf5
-#H55 = /nasa/hdf5/1.8.3/gcc/mpt
+#H55 = /Users/Shark/Documents/hdf5-1.10.1/hdf5
+H55 = /nasa/hdf5/1.8.3/gcc/mpt
 

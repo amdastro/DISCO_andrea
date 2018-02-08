@@ -92,6 +92,7 @@ int read_par_file( struct domain * theDomain ){
          err += readvar( pfile , "Restart"               , VAR_INT  , &(theList->restart_flag)    );
          err += readvar( pfile , "Use_Logtime"           , VAR_INT  , &(theList->Out_LogTime)     );
          err += readvar( pfile , "Use_Viscosity"         , VAR_INT  , &(theList->visc_flag)       );
+         err += readvar( pfile , "R_Initial"             , VAR_DOUB , &(theList->r_init)          ); //amd
          err += readvar( pfile , "Use_Sink"              , VAR_INT  , &(theList->sink_flag)       ); //amd
          err += readvar( pfile , "Sink_Timescale"        , VAR_DOUB , &(theList->t_sink_factor)   ); //amd
          err += readvar( pfile , "Sink_Radius"           , VAR_DOUB , &(theList->r_sink)          ); //amd

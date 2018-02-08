@@ -3,12 +3,12 @@
 # This file contains user-specified build options.
 
 # Build options
-INITIAL  = vortex
+INITIAL  = kepler
 HYDRO    = euler
 BOUNDARY = polar
 OUTPUT   = h5out
 RESTART  = h5in
-PLANETS  = none
+PLANETS  = cm
 METRIC   = flat_rpz
 FRAME    = normal
 
