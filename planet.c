@@ -134,39 +134,27 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
    double dy = r*sin(phi)-r_p*sin(p_p);
    double script_r = sqrt(dx*dx+dy*dy);
 
-   double visc_flag = theDomain->theParList.alpha_flag;
+   //double visc_flag = theDomain->theParList.alpha_flag;
    double t_sink_factor  = theDomain->theParList.t_sink_factor;
    double mach  = theDomain->theParList.Disk_Mach;
    // sink radius reads in current smoothing legnth
    double r_sink_factor = theDomain->theParList.r_sink;
    double eps = pl->eps;  
    double r_sink = r_sink_factor*eps;
-   double nu = theDomain->theParList.viscosity;
 
-   if (visc_flag){
-      double alpha = theDomain->theParList.viscosity;
-      //double c = sqrt( gamma_law*pres/rho );
-      //double h = c / om_p; // THIS ASSUMES ISOTHERMAL
-      //double h = r_sink / mach;  // depend on sink radius
-      double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
-      //double nu = 2.5e-5;
-   }
+   //double nu = theDomain->theParList.viscosity;
+
+   // Code currenty assumes alpha viscosity
+   // in an effort to increase speed.
+   // Must be changed for nu
+   double alpha = theDomain->theParList.viscosity;
+   double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
+   //if (visc_flag){
+   //}
  
-   //printf("nu = %e,r_sink = %e, r_sink_fac = %e, eps = %e, \n",nu,r_sink,r_sink_factor,eps);
-   // Set accretion timescale to viscous time at rsink
+    // Set accretion timescale to viscous time at rsink
    double t_visc = 2./3. * r_sink * r_sink / nu;
    double t_sink = t_sink_factor * t_visc;
-
-   //can read in dt from planet_sink, but then need to read it in to report.c too
-   // don't let sink timescale get too short, things could get unstable
-   //if (t_sink < 10.* dt){
-   //    t_sink = 10.*dt;
-   //}
-
-   // Or we can make the timescale some number of orbital times.
-   // This is dependent on the planet's orbital frequency, which 
-   // will change when it migrates -- think about implications of that! 
-   //double t_sink = t_sink_factor / om_p;
 
    //*drho_dt_sink = 0.0;
 

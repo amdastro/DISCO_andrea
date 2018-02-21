@@ -1,7 +1,7 @@
 #include "../../andrea.h"
 #include "../metric.h"
 
-static double om = 0.0; 
+//static double om = 0.0; 
 
 void setMetricParams(struct domain *theDomain)
 {
