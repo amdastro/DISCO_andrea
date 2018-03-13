@@ -8,25 +8,25 @@ double get_dp( double , double );
 
 double phigrav( double M , double r , double eps ){
    double n = PHI_ORDER;
-   //return( M/pow( pow(r,n) + pow(eps,n) , 1./n ) ) ;
+   return( M/pow( pow(r,n) + pow(eps,n) , 1./n ) ) ;
    // amd: changing to PW potential!
    // scaling for rS depends on post-processing scale factor
    // here r0 = 8rS, so 1rS = 0.125 r0 for M=1
    //return( M/(pow( pow(r,n) + pow(eps,n) , 1./n ) - 0.125*M) ) ;
    // Here as a test r0 = 16rS, so 1rS = 0.0625 for M=1
-   return( M/(pow( pow(r,n) + pow(eps,n) , 1./n ) - 0.0625*M) ) ;
+   //return( M/(pow( pow(r,n) + pow(eps,n) , 1./n ) - 0.0625*M) ) ;
 }
 
 double fgrav( double M , double r , double eps ){
    double n = PHI_ORDER;
-   //return( M*pow(r,n-1.)/pow( pow(r,n) + pow(eps,n) ,1.+1./n) );
+   return( M*pow(r,n-1.)/pow( pow(r,n) + pow(eps,n) ,1.+1./n) );
    // amd: Changing to Paczynski-Wiita grav force! d/dr of potential
    // Taking out that phi order option
    // pow pow pow pow pow 
    // here r0 = 8rS, so 1rS = 0.125 r0 for M=1
    //return( M*r/(pow(pow(r,2.) + pow(eps,2.) ,0.5) *pow(pow(pow(r,2.) + pow(eps,2.) ,0.5) - 0.125*M, 2.)));
    // Here as a test r0 = 16rS, so 1rS = 0.0625 for M=1
-   return( M*r/(pow(pow(r,2.) + pow(eps,2.) ,0.5) *pow(pow(pow(r,2.) + pow(eps,2.) ,0.5) - 0.0625*M, 2.)));
+   //return( M*r/(pow(pow(r,2.) + pow(eps,2.) ,0.5) *pow(pow(pow(r,2.) + pow(eps,2.) ,0.5) - 0.0625*M, 2.)));
 }
 
 void adjust_gas( struct planet * pl , double * x , double * prim , double gam ){
