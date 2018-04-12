@@ -6,6 +6,7 @@ static double q = 0.0;
 static double t_max = 0.0;
 static double mach = 0.0;
 static double eps_frac = 0.0;
+static double r_init = 0.0;
 
 void setPlanetParams( struct domain * theDomain ){
 
@@ -17,6 +18,7 @@ void setPlanetParams( struct domain * theDomain ){
    t_max = theDomain->theParList.t_max;
    mach  = theDomain->theParList.Disk_Mach;
    eps_frac = theDomain->theParList.eps_frac;
+   r_init = theDomain->theParList.r_init;
 
 }
 
@@ -25,7 +27,7 @@ int planet_motion_analytic( void ){
 }
 
 double drift_pos( double R , double t ){
-   return( pow( 1. + R*( t - t_max )/dexp , dexp ) );
+   return( r_init * pow( 1. + R*( t - t_max )/dexp , dexp ) );
 }
 
 void initializePlanets( struct planet * thePlanets ){
