@@ -49,10 +49,6 @@ void report( struct domain * theDomain ){
    if( dim_rank[1]==dim_size[1]-1 ) kmax = Nz;
 
    int j,k,i;
-   double L1_isen = 0.0;
-   double L1_rho  = 0.0;
-   double L1_P    = 0.0;
-   //double L1_B    = 0.0;
    //double Br2     = 0.0;
    //double B2      = 0.0;
    double Power  = 0.0;
@@ -111,15 +107,11 @@ void report( struct domain * theDomain ){
 
             PsiR += rho*dV*cos(phi);
             PsiI += rho*dV*sin(phi);
- 
-            L1_isen += fabs(Pp/pow(rho,gamma_law)-1.)*dV;
-            L1_rho  += fabs(rho/rho0-1.)*dV;
-            L1_P    += fabs(Pp/pow(rho,5./3.)/0.01-1.)*dV;
+
             //if( NUM_Q > BRR ){
             //   double Br = c->prim[BRR];
             //   double Bp = c->prim[BPP];
             //   double Bz = c->prim[BZZ];
-            //   L1_B += fabs(Br)*dV;
             //   Br2 += .5*Br*Br*dV;
             //   BrBp += Br*Bp*dV;
             //   B2  += .5*(Br*Br+Bp*Bp+Bz*Bz)*dV;
@@ -212,10 +204,6 @@ void report( struct domain * theDomain ){
       if( rhoavg_min > rho_avg/rho0 ) rhoavg_min = rho_avg/rho0;
    }
 
-   MPI_Allreduce( MPI_IN_PLACE , &L1_isen , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
-   MPI_Allreduce( MPI_IN_PLACE , &L1_rho  , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
-   MPI_Allreduce( MPI_IN_PLACE , &L1_P    , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
-   //MPI_Allreduce( MPI_IN_PLACE , &L1_B    , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    //MPI_Allreduce( MPI_IN_PLACE , &Br2     , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    //MPI_Allreduce( MPI_IN_PLACE , &B2      , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    //MPI_Allreduce( MPI_IN_PLACE , &BrBp    , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
@@ -240,11 +228,6 @@ void report( struct domain * theDomain ){
    MPI_Allreduce( MPI_IN_PLACE , &T_cut_halfeps   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    MPI_Allreduce( MPI_IN_PLACE , &T_cut_hill   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
 
-
-   L1_isen /= Vol;
-   L1_rho  /= Vol;
-   L1_P    /= Vol;
-   //L1_B    /= Vol;
    Mdot /= Vol;
    S_R /= S_0;
 
