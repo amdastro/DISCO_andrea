@@ -3,12 +3,12 @@
 # This file contains user-specified build options.
 
 # Build options
-INITIAL  = aspect
+INITIAL  = uniform
 HYDRO    = euler
 BOUNDARY = fixed
 OUTPUT   = h5out
 RESTART  = h5in
-PLANETS  = inspiral
+PLANETS  = drift
 METRIC   = flat_rpz
 FRAME    = normal
 
