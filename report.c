@@ -174,13 +174,13 @@ void report( struct domain * theDomain ){
                double rhill = pow(thePlanets[1].M/3., 1./3. ) * rp;
                
                double scriptr2 = rp*rp + r*r - 2.*r*rp*cos(phi-pp);
-                  if( scriptr2 > eps ){
+                  if( scriptr2 > eps*eps ){
                      T_cut_eps -= (rho-1.0)*rp*fp*dV;
                   }
-                  if( scriptr2 > 0.5*eps ){
+                  if( scriptr2 > 0.25*eps*eps ){
                      T_cut_halfeps -= (rho-1.0)*rp*fp*dV;
                   }
-                  if( scriptr2 > rhill ){
+                  if( scriptr2 > rhill*rhill ){
                      T_cut_hill -= (rho-1.0)*rp*fp*dV;
                   }
                
