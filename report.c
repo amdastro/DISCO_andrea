@@ -1,8 +1,7 @@
 #include "andrea.h"
 
 void planetaryForce( struct planet * , double , double , double , double * , double * , double * , int );
-void get_drho_dt(struct planet * , struct domain * , double , double , double , double , double * );
-
+void get_drho_dt(struct planet * , double , double , double , double * );
 
 
 double get_dV( double * , double * );
@@ -74,10 +73,8 @@ void report( struct domain * theDomain ){
 
    double drho_dt_sink = 0.0;
 
-   // amd: Torque with epsilon cut out:
-   double T_cut_eps = 0.0;
-   double T_cut_halfeps = 0.0;
-   double T_cut_hill = 0.0;
+   // amd: Torque inside Hill radius
+   double Torq_hill = 0.0;
    //double T_cut[10];
    //double P_cut[10];
    //for( j=0 ; j<10 ; ++j ){ T_cut[j]=0.;  P_cut[j]=0.; }
@@ -144,7 +141,7 @@ void report( struct domain * theDomain ){
                // If there were multiple BHs, this would need to
                // loop over each planet
                if( sink_flag ){ 
-                  get_drho_dt( thePlanets+1  , theDomain , r , phi , pres , rho , &drho_dt_sink );
+                  get_drho_dt( thePlanets+1 , r , phi , rho , &drho_dt_sink );
                }
                // Accretion rate
                MdotP += drho_dt_sink*dV;
@@ -171,18 +168,11 @@ void report( struct domain * theDomain ){
                Fr -= (rho-1.0)*fr*dV;
 
                double pp = thePlanets[1].phi;
-               double eps = thePlanets[1].eps;
                double rhill = pow(thePlanets[1].M/3., 1./3. ) * rp;
                
                double scriptr2 = rp*rp + r*r - 2.*r*rp*cos(phi-pp);
-                  if( scriptr2 > eps*eps ){
-                     T_cut_eps -= (rho-1.0)*rp*fp*dV;
-                  }
-                  if( scriptr2 > 0.25*eps*eps ){
-                     T_cut_halfeps -= (rho-1.0)*rp*fp*dV;
-                  }
-                  if( scriptr2 > rhill*rhill ){
-                     T_cut_hill -= (rho-1.0)*rp*fp*dV;
+                  if( scriptr2 < rhill*rhill ){
+                     Torq_hill -= (rho-1.0)*rp*fp*dV;
                   }
                
 
@@ -225,9 +215,7 @@ void report( struct domain * theDomain ){
    MPI_Allreduce( MPI_IN_PLACE , &S_0     , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
    MPI_Allreduce( MPI_IN_PLACE , &Mdot    , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
 
-   MPI_Allreduce( MPI_IN_PLACE , &T_cut_eps   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
-   MPI_Allreduce( MPI_IN_PLACE , &T_cut_halfeps   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
-   MPI_Allreduce( MPI_IN_PLACE , &T_cut_hill   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
+   MPI_Allreduce( MPI_IN_PLACE , &Torq_hill   , 1 , MPI_DOUBLE , MPI_SUM , grid_comm );
 
    Mdot /= Vol;
    S_R /= S_0;
@@ -237,8 +225,8 @@ void report( struct domain * theDomain ){
 
    if( rank==0 ){
       FILE * rFile = fopen("report.dat","a");
-      fprintf(rFile,"%e %e %e %e %e %e %e %e %e %e %e %e %e %e %e\n",
-                t,Torque,T_cut_halfeps,T_cut_eps,T_cut_hill,Torque2,r_p,p_p,MdotP,JdotP,Fr,rho_min,rhoavg_min,Mass,Mdot);
+      fprintf(rFile,"%e %e %e %e %e %e %e %e %e %e %e %e %e\n",
+                t,Torque,Torq_hill,Torque2,r_p,p_p,MdotP,JdotP,Fr,rho_min,rhoavg_min,Mass,Mdot);
       //fprintf(rFile,"%e %e %e ",t,Torque,Power);
       //for( j=0 ; j<10 ; ++j ) fprintf(rFile,"%e %e ",T_cut[j],P_cut[j]);
       //fprintf(rFile,"\n");

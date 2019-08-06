@@ -1,5 +1,14 @@
 #include "andrea.h"
 
+static double t_sink_factor;
+static double mach;
+static double alpha;
+
+void set_generic_params( struct domain * theDomain ){
+  t_sink_factor  = theDomain->theParList.t_sink_factor;
+  mach  = theDomain->theParList.Disk_Mach;
+  alpha = theDomain->theParList.viscosity;
+}
 
 double PHI_ORDER = 2.0;
 
@@ -9,7 +18,7 @@ double get_dp( double , double );
 double phigrav( double M , double r , double eps ){
    double n = PHI_ORDER;
    return( M/pow( pow(r,n) + pow(eps,n) , 1./n ) ) ;
-   // amd: changing to PW potential!
+   // amd: PW potential!
    // scaling for rS depends on post-processing scale factor
    // here r0 = 8rS, so 1rS = 0.125 r0 for M=1
    //return( M/(pow( pow(r,n) + pow(eps,n) , 1./n ) - 0.125*M) ) ;
@@ -119,38 +128,28 @@ void planet_src( struct planet * pl , double * prim , double * cons , double * x
 }
 
 //amd
-void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , double phi , double rho , double pres , double * drho_dt_sink){
-   // From planet data:
+void get_drho_dt(struct planet * pl , double r , double phi , double rho ,  double * drho_dt_sink){
+
    double r_p = pl->r;
    double p_p = pl->phi;
-   //double om_p = pl->omega;
    double m_p = pl->M;
 
-   // Get the distance of the cell to the planet:
+   // Distance of the cell to the planet:
    double dx = r*cos(phi)-r_p*cos(p_p);
    double dy = r*sin(phi)-r_p*sin(p_p);
    double script_r = sqrt(dx*dx+dy*dy);
 
-   //double visc_flag = theDomain->theParList.alpha_flag;
-   double t_sink_factor  = theDomain->theParList.t_sink_factor;
-   double mach  = theDomain->theParList.Disk_Mach;
-   // sink radius reads in current smoothing legnth
-   double r_sink_factor = theDomain->theParList.r_sink;
-   double eps = pl->eps;  
-   double r_sink = r_sink_factor*eps;
+   // Assumes r_sink = smoothing length:
+   //double eps = pl->eps;  
+   //double r_sink = r_sink_factor*eps;
+   double r_sink = pl->eps;
 
-   //double nu = theDomain->theParList.viscosity;
-
-   // Code currenty assumes alpha viscosity
-   // in an effort to increase speed.
+   // **Assumes alpha viscosity
    // Must be changed for nu
-   double alpha = theDomain->theParList.viscosity;
-   double nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
-   //if (visc_flag){
-   //}
+   double sink_nu = alpha * pow(m_p,0.5) * pow(r_sink,0.5) / pow(mach,2);
  
     // Set accretion timescale to viscous time at rsink
-   double t_visc = 2./3. * r_sink * r_sink / nu;
+   double t_visc = 2./3. * r_sink * r_sink / sink_nu;
    double t_sink = t_sink_factor * t_visc;
 
    //*drho_dt_sink = 0.0;
@@ -164,7 +163,7 @@ void get_drho_dt(struct planet * pl , struct domain * theDomain , double r , dou
 
 }
 
-void planet_sink(struct planet * pl , struct domain * theDomain , double * prim , double * cons , double * xp , double * xm , double dVdt ){
+void planet_sink(struct planet * pl , double * prim , double * cons , double * xp , double * xm , double dVdt ){
 
    // This is cell data
    double rp = xp[0];
@@ -186,7 +185,7 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    // Call get_drho_dt with planet data and cell r, phi
    // rho, pres, viscosity
 
-   get_drho_dt( pl , theDomain , r , phi , rho , pres , &drho_dt_sink );
+   get_drho_dt( pl , r , phi , rho , &drho_dt_sink );
 
    // Update all the conservative variables since they have factors of rho
    // better to use primitive variables on the right hand side, since those 
@@ -194,7 +193,7 @@ void planet_sink(struct planet * pl , struct domain * theDomain , double * prim 
    
    cons[DDD] -= drho_dt_sink*dVdt;
    cons[SRR] -= drho_dt_sink * vr * dVdt;
-   cons[TAU] -= .5 * drho_dt_sink * dVdt;
+   cons[TAU] -= .5 * (vr*vr + vp*vp + vz*vz ) * drho_dt_sink * dVdt;
    cons[LLL] -= r * drho_dt_sink * vp * dVdt;
    cons[SZZ] -= drho_dt_sink * vz * dVdt;
 
