@@ -1,4 +1,3 @@
-
 #include "andrea.h"
 
 void planetaryForce( struct planet * , double , double , double , double * , double * , double * , int );
@@ -104,6 +103,8 @@ void report( struct domain * theDomain ){
             double xp[3] = {r_jph[j]  ,phip,z_kph[k]  };
             double xm[3] = {r_jph[j-1],phim,z_kph[k-1]};
             double dV = get_dV( xp , xm );
+	    //bug fix for 2D quantities:
+	    if( Nz == 1 ) dV /= z_kph[0]-z_kph[-1];
 
             PsiR += rho*dV*cos(phi);
             PsiI += rho*dV*sin(phi);
