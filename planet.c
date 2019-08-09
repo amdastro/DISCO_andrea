@@ -4,7 +4,7 @@ static double t_sink_factor;
 static double mach;
 static double alpha;
 
-void set_generic_params( struct domain * theDomain ){
+void setGenericParams( struct domain * theDomain ){
   t_sink_factor  = theDomain->theParList.t_sink_factor;
   mach  = theDomain->theParList.Disk_Mach;
   alpha = theDomain->theParList.viscosity;
@@ -190,7 +190,7 @@ void planet_sink(struct planet * pl , double * prim , double * cons , double * x
    // Update all the conservative variables since they have factors of rho
    // better to use primitive variables on the right hand side, since those 
    // aren't being updated throughout a time step   
-   
+
    cons[DDD] -= drho_dt_sink*dVdt;
    cons[SRR] -= drho_dt_sink * vr * dVdt;
    cons[TAU] -= .5 * (vr*vr + vp*vp + vz*vz ) * drho_dt_sink * dVdt;

@@ -15,6 +15,7 @@ void setPlanetParams( struct domain * );
 void setHlldParams( struct domain * );
 void setDiskParams( struct domain * );
 void setOmegaParams( struct domain * );
+void setGenericParams( struct domain * );
 
 int get_num_rzFaces( int , int , int );
 
@@ -33,6 +34,7 @@ void setupDomain( struct domain * theDomain ){
    }
 
    setPlanetParams( theDomain );
+   setGenericParams( theDomain );
    int Npl = theDomain->Npl;
    theDomain->thePlanets = (struct planet *) malloc( Npl*sizeof(struct planet) );
    initializePlanets( theDomain->thePlanets );
