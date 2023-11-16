@@ -27,6 +27,7 @@ int planet_motion_analytic( void ){
 }
 
 double drift_pos( double R , double t ){
+   // planet initial position is set by drift rate and sim time
    return( r_init * pow( 1. + R*(t - t_max)/dexp , dexp) );
 }
 
@@ -64,6 +65,7 @@ void movePlanets( struct planet * thePlanets , double t , double dt ){
    thePlanets[0].phi += thePlanets[0].omega*dt;
    thePlanets[1].r     = r*(1.0 - mu);
    thePlanets[1].phi  += thePlanets[1].omega*dt;
+   // update smoothing length as planet drifts within a Mach profile disk
    thePlanets[1].eps   = eps_frac * r/mach;
 
 }
