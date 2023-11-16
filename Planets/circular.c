@@ -1,14 +1,16 @@
 
 #include "../andrea.h"
 
-static double q_planet = 1.0;
-static double Mach = 1.0;
+static double q = 1.0;
+static double mach = 0.0;
+static double eps_frac = 0.0;
 
 void setPlanetParams( struct domain * theDomain ){
 
    theDomain->Npl = 2; 
-   q_planet = theDomain->theParList.Mass_Ratio;
-   Mach = theDomain->theParList.Disk_Mach;
+   q = theDomain->theParList.Mass_Ratio;
+   mach = theDomain->theParList.Disk_Mach;
+   eps_frac = theDomain->theParList.eps_frac;
 
 }
 
@@ -18,23 +20,30 @@ int planet_motion_analytic( void ){
 
 void initializePlanets( struct planet * thePlanets ){
 
-   thePlanets[0].M     = 1.0; 
+   // r is total separation
+   double r = 1.0;
+   double mu = q/(1.0 + q);
+   //units: G*M_total = 1
+   double om = pow(r,-1.5);
+
+   thePlanets[0].M     = (1.0 - mu); 
    thePlanets[0].vr    = 0.0; 
-   thePlanets[0].omega = 0.0; 
-   thePlanets[0].r     = 0.0; 
+   thePlanets[0].omega = om; 
+   thePlanets[0].r     = r*mu; 
    thePlanets[0].phi   = 0.0; 
    thePlanets[0].eps   = 0.0;
 
-   thePlanets[1].M     = q_planet; 
+   thePlanets[1].M     = mu; 
    thePlanets[1].vr    = 0.0; 
-   thePlanets[1].omega = 1.0; 
-   thePlanets[1].r     = 1.0; 
-   thePlanets[1].phi   = 0.0; 
-   thePlanets[1].eps   = 0.5/Mach;
+   thePlanets[1].omega = om; 
+   thePlanets[1].r     = r*(1.0 - mu); 
+   thePlanets[1].phi   = 0.0;
+   thePlanets[1].eps   = eps_frac/mach;
 
 }
 
 void movePlanets( struct planet * thePlanets , double t , double dt ){
+   thePlanets[0].phi += thePlanets[0].omega*dt;
    thePlanets[1].phi += thePlanets[1].omega*dt;
 }
 

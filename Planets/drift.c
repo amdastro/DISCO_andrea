@@ -27,24 +27,28 @@ int planet_motion_analytic( void ){
 }
 
 double drift_pos( double R , double t ){
-   return( r_init * pow( 1. + R*( t - t_max )/dexp , dexp ) );
+   return( r_init * pow( 1. + R*(t - t_max)/dexp , dexp) );
 }
 
 void initializePlanets( struct planet * thePlanets ){
 
-   double r = drift_pos( rate , 0.0 );
+   // r is total separation
+   double r = drift_pos(rate , 0.0);
+   double mu = q/(1.0 + q);
+   //units: G*M_total = 1
+   double om = pow(r,-1.5); 
 
-   thePlanets[0].M     = 1.0; 
+   thePlanets[0].M     = (1.0 - mu); 
    thePlanets[0].vr    = 0.0; 
-   thePlanets[0].omega = 0.0; 
-   thePlanets[0].r     = 0.0; 
+   thePlanets[0].omega = om; 
+   thePlanets[0].r     = r*mu; 
    thePlanets[0].phi   = 0.0; 
    thePlanets[0].eps   = 0.0;
 
-   thePlanets[1].M     = q; 
+   thePlanets[1].M     = mu; 
    thePlanets[1].vr    = 0.0; 
-   thePlanets[1].omega = pow(r,-1.5); 
-   thePlanets[1].r     = r; 
+   thePlanets[1].omega = om; 
+   thePlanets[1].r     = r*(1.0 - mu); 
    thePlanets[1].phi   = 0.0; 
    //amd: smoothing length is some fraction of scale height
    thePlanets[1].eps   = eps_frac/mach;
@@ -53,10 +57,12 @@ void initializePlanets( struct planet * thePlanets ){
 
 void movePlanets( struct planet * thePlanets , double t , double dt ){
 
-   double r = drift_pos( rate , t+dt );
-
-   thePlanets[1].r     = r;
-   thePlanets[1].omega = pow(r,-1.5);
+   double mu = 1/(1.0 + q);
+   double r = drift_pos(rate , t+dt);
+   
+   thePlanets[0].r     = r*mu;
+   thePlanets[0].phi += thePlanets[0].omega*dt;
+   thePlanets[1].r     = r*(1.0 - mu);
    thePlanets[1].phi  += thePlanets[1].omega*dt;
    thePlanets[1].eps   = eps_frac * r/mach;
 
