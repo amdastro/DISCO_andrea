@@ -142,7 +142,6 @@ void report( struct domain * theDomain ){
                // careful with notation consistency between primary and secondary! yikes!
                double r_p = thePlanets[1].r;
 	            double rprimary = thePlanets[0].r;
-	            double pprimary = thePlanets[0].phi;
                double om = thePlanets[1].omega;
                double vr = thePlanets[1].vr;
                double eps = thePlanets[1].eps;
@@ -209,7 +208,7 @@ void report( struct domain * theDomain ){
          }
       }
       rho_avg /= Vol_avg;
-      rho_rp_avg /= Vel_avg;
+      rho_rp_avg /= Vol_avg;
       if( rhoavg_min > rho_avg/rho0 ) rhoavg_min = rho_avg/rho0;
    }
 
