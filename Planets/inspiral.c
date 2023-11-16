@@ -64,7 +64,7 @@ void initializePlanets( struct planet * thePlanets ){
 void movePlanets( struct planet * thePlanets , double t , double dt ){
 
    double r = drift_pos( rate , t+dt );
-   double mu = 1/(1.0 + q);
+   double mu = q/(1.0 + q);
 
    thePlanets[0].r     = r*mu;
    thePlanets[0].phi += thePlanets[0].omega*dt;
