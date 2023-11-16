@@ -125,7 +125,7 @@ void report( struct domain * theDomain ){
             Vol += dV;
 
             //find rho_peak
-            if( rho_peak > rho/rho0 ) rho_peak = rho/rho0
+            if( rho_peak > rho/rho0 ) rho_peak = rho/rho0;
 
             if( rho_min > rho/rho0 ) rho_min = rho/rho0;
             rho_avg += rho*dV;
